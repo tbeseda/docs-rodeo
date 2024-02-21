@@ -36,7 +36,7 @@ async function http({ params }) {
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>${title}</title>
+    <title>docs.rodeo - ${title}</title>
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <link rel="stylesheet" href="https://unpkg.com/highlight.js@11.5.1/styles/night-owl.css">
     <style>
@@ -148,6 +148,9 @@ async function http({ params }) {
 
   return {
     html: document,
+    headers: {
+      'cache-control': 'public, max-age=3600, must-revalidate',
+    },
   }
 }
 
