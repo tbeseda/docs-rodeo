@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "start": "arc sandbox"
+  },
+  "dependencies": {
+    "@architect/functions": "^8.0.4",
+    "arcdown": "^2.3.0-RC.0"
+  },
+  "devDependencies": {
+    "@architect/architect": "^11.0.5",
+    "@biomejs/biome": "1.5.3"
+  }
+}
