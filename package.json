@@ -1,6 +1,10 @@
 {
   "scripts": {
-    "start": "arc sandbox"
+    "start": "arc sandbox",
+    "check": "biome check --apply ./",
+    "lint": "biome lint --apply ./",
+    "format": "biome format --write ./",
+    "test": "npm run check"
   },
   "dependencies": {
     "@architect/functions": "^8.0.4",

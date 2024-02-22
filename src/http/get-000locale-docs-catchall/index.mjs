@@ -19,20 +19,24 @@ async function http({ params }) {
     return {
       status: 404,
       html: /* html */ `
-        <a href="${mdnUrl}">Sorry, check MDN: ${mdnUrl}</a>
+        <a href="${mdnUrl}">Sorry, something broke. Check MDN: ${mdnUrl}</a>
       `,
     }
   }
 
   // transform markdown file
   // ? these could be markdown-it plugins
-  // fix up code fences
-  file = file.replace(/```js[^\n]*\n/g, "```javascript\n")
-  file = file.replace(/```plain\n/g, '```\n')
-  // image paths
-  file = file.replace(/!\[(.*?)\]\((.*?)\)/g, (match, altText, imagePath) => {
-    return `![${altText}](${mdnUrl}/${imagePath})`;
-  })
+  file = file
+    // fix up code fences
+    .replace(/```js[^\n]*\n/g, '```javascript\n')
+    .replace(/```css[^\n]*\n/g, '```css\n')
+    .replace(/```plain\n/g, '```\n')
+    // image paths
+    .replace(/!\[(.*?)\]\((.*?)\)/g, (match, altText, imagePath) => {
+      return `![${altText}](${mdnUrl}/${imagePath})`
+    })
+    // backticks for missing features in "{{ }}"
+    .replace(/({{.*?}})/g, '`$1`&nbsp;')
 
   const { html, title, tocHtml } = await renderer.render(file)
 
@@ -73,25 +77,36 @@ async function http({ params }) {
         align-items: center;
         padding: 0.66rem 0;
         border-bottom: 1px solid #ddd;
-      }
-      header-title {
-        & * {
-          margin: 0;
+
+        header-title {
+          & * {
+            margin: 0;
+          }
+          h1 {
+            a {
+              color: royalblue;
+              text-decoration-color: skyblue;
+              text-decoration-thickness: .2rem;
+              text-underline-offset: 1.5px;
+            }
+            a:visited {
+              color: royalblue;
+            }
+          }
+          h2 {
+            color: cadetblue;
+            font-size: 1.1rem;
+          }
         }
-        h1 {
+
+        nav {
+          display: flex;
+          gap: 0.66rem;
           a {
             color: royalblue;
-            text-decoration-color: skyblue;
-            text-decoration-thickness: .2rem;
-            text-underline-offset: 1.5px;
+            text-decoration: none;
+            font-weight: 600;
           }
-          a:visited {
-            color: royalblue;
-          }
-        }
-        h2 {
-          color: cadetblue;
-          font-size: 1.1rem;
         }
       }
 
@@ -105,6 +120,17 @@ async function http({ params }) {
         img {
           max-width: 100%;
           height: auto;
+        }
+        table {
+          border-collapse: collapse;
+          width: 100%;
+          th, td {
+            border: 1px solid lightgray;
+            padding: 0.5rem;
+            & * {
+              margin: 0;
+            }
+          }
         }
       }
 
@@ -147,7 +173,7 @@ async function http({ params }) {
     <right-rail>
       <h3>In this article</h3>
       ${tocHtml}
-      <code><a href="${mdnUrl}" target="_blank">View on MDN</a></code>
+      <small><a href="${mdnUrl}" target="_blank">View on MDN</a></small>
     </right-rail>
 
     <footer>

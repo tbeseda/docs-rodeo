@@ -6,7 +6,7 @@ export async function handler(req) {
       'cache-control': 'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0',
       'content-type': 'text/html; charset=utf8',
     },
-    body: `
+    body: /*html*/ `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,44 +42,42 @@ export async function handler(req) {
         align-items: center;
         padding: 0.66rem 0;
         border-bottom: 1px solid #ddd;
-      }
-      header-title {
-        & * {
-          margin: 0;
+
+        header-title {
+          & * {
+            margin: 0;
+          }
+          h1 {
+            a {
+              color: royalblue;
+              text-decoration-color: skyblue;
+              text-decoration-thickness: .2rem;
+              text-underline-offset: 1.5px;
+            }
+            a:visited {
+              color: royalblue;
+            }
+          }
+          h2 {
+            color: cadetblue;
+            font-size: 1.1rem;
+          }
         }
-        h1 {
+
+        nav {
+          display: flex;
+          gap: 0.66rem;
           a {
             color: royalblue;
-            text-decoration-color: skyblue;
-            text-decoration-thickness: .2rem;
-            text-underline-offset: 1.5px;
+            text-decoration: none;
+            font-weight: 600;
           }
-          a:visited {
-            color: royalblue;
-          }
-        }
-        h2 {
-          color: cadetblue;
-          font-size: 1.1rem;
-        }
-      }
-
-      article {
-        line-height: 1.33;
-        a {
-          color: royalblue;
-          font-weight: 600;
-          text-decoration: none;
         }
       }
 
       footer {
         padding: 0.66rem 0;
         text-align: center;
-      }
-
-      .hljs {
-        padding: 1rem;
       }
     </style>
   </head>

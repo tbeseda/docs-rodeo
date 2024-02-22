@@ -1,9 +1,9 @@
 @app
 docs-rodeo
 
-@static
-fingerprint true
-prune true
+# @static
+# fingerprint true
+# prune true
 
 @http
 get /
