@@ -1,12 +1,8 @@
-import { readFileSync } from 'node:fs'
-import { join } from 'node:path'
-import { URL } from 'node:url'
-
 import arc from '@architect/functions'
 import { Arcdown } from 'arcdown'
 
 const renderer = new Arcdown()
-const here = new URL('.', import.meta.url).pathname
+const ghRoot = 'https://raw.githubusercontent.com/mdn/content/main/files/'
 
 async function http({ params }) {
   const { locale, proxy } = params
@@ -14,11 +10,11 @@ async function http({ params }) {
   const lang = locale.toLowerCase()
   const path = proxy.toLowerCase()
 
-  const md = join(here, 'docs', lang, path, 'index.md')
-
   let file
   try {
-    file = readFileSync(md, 'utf8')
+    const ghPath = [ghRoot, lang, path, 'index.md'].join('/')
+    const response = await fetch(ghPath)
+    file = await response.text()
   } catch (err) {
     return {
       status: 404,
@@ -34,8 +30,8 @@ async function http({ params }) {
   file = file.replace(/```js[^\n]*\n/g, "```javascript\n")
   file = file.replace(/```plain\n/g, '```\n')
   // image paths
-  file = file.replace(/!\[.*?\]\((.*?)\)/g, (match, p1) => {
-    return `![${p1}](${mdnUrl}/${p1})`;
+  file = file.replace(/!\[(.*?)\]\((.*?)\)/g, (match, altText, imagePath) => {
+    return `![${altText}](${mdnUrl}/${imagePath})`;
   })
 
   const { html, title, tocHtml } = await renderer.render(file)
