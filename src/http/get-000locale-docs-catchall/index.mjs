@@ -10,6 +10,7 @@ const here = new URL('.', import.meta.url).pathname
 
 async function http({ params }) {
   const { locale, proxy } = params
+  const mdnUrl = `https://developer.mozilla.org/${locale}/docs/${proxy}`
   const lang = locale.toLowerCase()
   const path = proxy.toLowerCase()
 
@@ -19,7 +20,6 @@ async function http({ params }) {
   try {
     file = readFileSync(md, 'utf8')
   } catch (err) {
-    const mdnUrl = `https://developer.mozilla.org/${locale}/docs/${proxy}`
     return {
       status: 404,
       html: /* html */ `
@@ -27,6 +27,16 @@ async function http({ params }) {
       `,
     }
   }
+
+  // transform markdown file
+  // ? these could be markdown-it plugins
+  // fix up code fences
+  file = file.replace(/```js[^\n]*\n/g, "```javascript\n")
+  file = file.replace(/```plain\n/g, '```\n')
+  // image paths
+  file = file.replace(/!\[.*?\]\((.*?)\)/g, (match, p1) => {
+    return `![${p1}](${mdnUrl}/${p1})`;
+  })
 
   const { html, title, tocHtml } = await renderer.render(file)
 
@@ -96,6 +106,10 @@ async function http({ params }) {
           font-weight: 600;
           text-decoration: none;
         }
+        img {
+          max-width: 100%;
+          height: auto;
+        }
       }
 
       footer {
@@ -137,6 +151,7 @@ async function http({ params }) {
     <right-rail>
       <h3>In this article</h3>
       ${tocHtml}
+      <code><a href="${mdnUrl}" target="_blank">View on MDN</a></code>
     </right-rail>
 
     <footer>

@@ -4,7 +4,7 @@
   },
   "dependencies": {
     "@architect/functions": "^8.0.4",
-    "arcdown": "^2.3.0-RC.0"
+    "arcdown": "^2.3.0-RC.3"
   },
   "devDependencies": {
     "@architect/architect": "^11.0.5",
